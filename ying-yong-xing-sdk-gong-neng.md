@@ -105,11 +105,3 @@ public class SzztApplication extends Application{
 
 4.打印二维码、文字等都可以参考这类的代码。
 
-
-
-
-
-## 银行卡读取，Pboc相关：
-
-银行卡的读取示例可以进入到消费的流程去看。
-
