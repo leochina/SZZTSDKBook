@@ -7,4 +7,5 @@
 * [密钥下载](mi-yao-xia-zai.md)
 * [应用读卡相关](ying-yong-du-qia-xiang-guan.md)
 * [密码键盘使用](mi-ma-jian-pan-shi-yong.md)
+* [串口](chuan-kou.md)
 
