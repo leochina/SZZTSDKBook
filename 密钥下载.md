@@ -1,0 +1,64 @@
+## 终端密钥管理可以参照KeysManageActivity：
+
+（密钥体系的介绍连接）
+
+### 简介：
+
+密码键盘只需要把密钥索引的对应关系处理正确即可，我司密钥索引取值范围为0-18，共19组。根密钥PTK是明文保存，用来解密主密钥TMK，主密钥用来解密工作密钥WK，工作密钥有三组，PIN用来加密卡片密码，MAC用来加密报文得到64域的MAC值，DES用来加密磁道信息。
+
+调用证通密钥键盘需要的权限：
+
+&lt;uses-permission android:name="android.permission.CLOUDPOS\_PIN\_GET\_PIN\_BLOCK" /&gt;
+
+&lt;uses-permission android:name="android.permission.CLOUDPOS\_PIN\_MAC" /&gt;
+
+&lt;uses-permission android:name="android.permission.CLOUDPOS\_PIN\_ENCRYPT\_DATA" /&gt;
+
+&lt;uses-permission android:name="android.permission.CLOUDPOS\_PIN\_UPDATA\_USER\_KEY" /&gt;
+
+&lt;uses-permission android:name="android.permission.CLOUDPOS\_PIN\_UPDATE\_MASTER\_KEY" /&gt;
+
+### 1.设置主密钥值
+
+调用pinpad的updateMasterKey方法，第一位参数是根密钥索引，填负数表示没有根密钥，主密钥是明文，否则表示主密钥是密文保存，运算时会自动调用改索引下的根密钥对主密钥进行解密。第二位参数为主密钥的索引值。第三位参数为主密钥。第四位参数密钥校验数据，不需要校验密钥传null。第五位参数为密钥算法。
+
+```java
+SZZTPinpad pinpad = SDKManager.getPinpad();
+            mode = (desType == FieldConstants.SM4)? PinPad.Mode.MODE_SM4: PinPad.Mode.MODE_3DES;
+            int isSuccess = pinpad.updateMasterKey(-1,
+                    Integer.parseInt(indexes),
+                    HexDump.hexStringToByteArray(masterKey),
+                    null,
+                    mode);
+```
+
+
+
+### 2.工作密钥
+
+通常在登录（签到）的时候会下载工作密钥。此处可参考LoginPackage这个类。
+
+调用pinpad的updateUserKey方法。第一位参数是主密钥索引值。第二位参数是密钥类型。第三位参数是工作密钥索引。第四位是工作密钥。第五位是工作密钥校验数据。第六位是工作密钥的算法。
+
+以下代码片段分别是设置主密钥中的PIN密钥和MAC密钥。
+
+```java
+ ret = SDKManager.getPinpad().updateUserKey(mPosParam.getIMainKeyIdx(), SZZTPinpad.KeyType.PIN,
+                    mPosParam.getIMainKeyIdx(), pin, pinChk, SZZTPinpad.Mode.MODE_3DES);
+            if (ret < 0) {
+                Log.i(TAG, "handleF62 PIN ret:" + ret);
+                return false;
+            }
+```
+
+```java
+ ret = SDKManager.getPinpad().updateUserKey(mPosParam.getIMainKeyIdx(), SZZTPinpad.KeyType.MAC,
+                    mPosParam.getIMainKeyIdx(), mac, macChk, SZZTPinpad.Mode.MODE_3DES);
+            if (ret < 0) {
+                Log.i(TAG, "handleF62 MAC ret:" + ret);
+                return false;
+            }
+```
+
+
+
