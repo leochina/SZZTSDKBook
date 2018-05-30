@@ -77,7 +77,7 @@ public class SzztApplication extends Application{
 
 3.打印图片
 
-打印图片可以调用addImg\(bitmap\)这个方法，这里注意，参数必须是bitmap，bitmap在5M之内。再调用startPrint就可以开始打印了。以下是示例：
+打印图片可以调用addImg\(bitmap\)这个方法，这里注意，参数必须是bitmap，bitmap在10M之内。再调用startPrint就可以开始打印了。以下是示例：
 
 ```java
 /**
